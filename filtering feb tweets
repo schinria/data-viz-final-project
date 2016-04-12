@@ -1,0 +1,15 @@
+setwd("/Users/IITSLoan/Documents/DATA_VIZ_FINAL/tweets_files")
+list.files()
+file <- list.files()
+df1 <- read.csv(file[1], stringsAsFactors = FALSE)
+df1 <- df1 %>% filter(geo_enabled == "True" & country_code == "US")
+
+for (f in 2:length(file)) {
+  df_next <- read.csv(file[f], stringsAsFactors = FALSE) %>% 
+    filter(geo_enabled == "True" & country_code == "US")
+  df1 <- rbind(df1, df_next)
+}
+
+write.csv(df1, file = "feb_updated.csv")
+sum(!is.na(df1$place_lon))
+sum(!is.na(df1$place_lat))
