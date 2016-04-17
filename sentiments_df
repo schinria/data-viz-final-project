@@ -1,0 +1,22 @@
+cand_date <- read.csv("cand_sentiment_date.csv") 
+sentiments_df <- cand_date %>%
+group_by(date) %>%
+  summarize(total_freq_cl = sum(hillary_tweet),
+            total_freq_sa = sum(bernie_tweet),
+            total_freq_cr = sum(cruz_tweet),
+            total_freq_ru = sum(rubio_tweet),
+            total_freq_ka = sum(kasich_tweet),
+            total_freq_tr = sum(trump_tweet),
+            positive_cl = sum(hillary_tweet == 1 & raw_score > 0),
+            positive_sa = sum(bernie_tweet == 1 & raw_score > 0),
+            positive_cr = sum(cruz_tweet == 1 & raw_score > 0),
+            positive_ru = sum(rubio_tweet == 1 & raw_score > 0),
+            positive_ka = sum(kasich_tweet == 1 & raw_score > 0),
+            positive_tr = sum(trump_tweet == 1 & raw_score > 0),
+            negative_cl = sum(hillary_tweet == 1 & raw_score < 0),
+            negative_sa = sum(bernie_tweet == 1 & raw_score < 0),
+            negative_cr = sum(cruz_tweet == 1 & raw_score < 0),
+            negative_ru = sum(rubio_tweet == 1 & raw_score < 0),
+            negative_ka = sum(kasich_tweet == 1 & raw_score < 0),
+            negative_tr = sum(trump_tweet == 1 & raw_score < 0))
+save(sentiments_df, file = "sentiments_df.RData")
