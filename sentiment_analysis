@@ -1,0 +1,94 @@
+setwd("~/data-viz-final-project")
+​
+load("tweets_pres.RData")
+​
+sample_tweets <- read.csv("feb_updated.csv")
+​
+sample_tweets <- df_all
+​
+library(stringr)
+library(stringi)
+​
+sample_tweets$textl <- (sample_tweets$text)
+​
+sample_tweets$sanders <- str_count(sample_tweets$textl, ignore.case("sanders"))
+sample_tweets$berniesanders <-str_count(sample_tweets$textl, ignore.case("berniesanders"))
+sample_tweets$bernie_sanders <-str_count(sample_tweets$textl, ignore.case("bernie sanders"))
+sample_tweets$bern <-str_count(sample_tweets$textl, ignore.case("bern"))
+​
+sample_tweets$hill_clinton <-str_count(sample_tweets$textl, ignore.case("hillary clinton"))
+sample_tweets$clinton <-str_count(sample_tweets$textl, ignore.case("clinton"))
+sample_tweets$hillary <-str_count(sample_tweets$textl, ignore.case("clinton"))
+sample_tweets$hillclinton <-str_count(sample_tweets$textl, ignore.case("hillaryclinton"))
+sample_tweets$hil_clinton <-str_count(sample_tweets$textl, ignore.case("hilary clinton"))
+sample_tweets$hilclinton <-str_count(sample_tweets$textl, ignore.case("hilaryclinton"))
+​
+sample_tweets$donald_trump <-str_count(sample_tweets$textl, ignore.case("donald trump"))
+sample_tweets$trump <-str_count(sample_tweets$textl, ignore.case("trump"))
+sample_tweets$donaldtrump <-str_count(sample_tweets$textl, ignore.case("donaldtrump"))
+​
+sample_tweets$rubio <-str_count(sample_tweets$textl, ignore.case("rubio"))
+sample_tweets$marco_rubio <-str_count(sample_tweets$textl, ignore.case("marco rubio"))
+sample_tweets$marcorubio <-str_count(sample_tweets$textl, ignore.case("marcorubio"))
+​
+sample_tweets$cruz <-str_count(sample_tweets$textl, ignore.case("cruz"))
+sample_tweets$ted_cruz <-str_count(sample_tweets$textl, ignore.case("ted cruz"))
+sample_tweets$tedcruz <-str_count(sample_tweets$textl, ignore.case("tedcruz"))
+​
+sample_tweets$kasich <-str_count(sample_tweets$textl, ignore.case("kasich"))
+sample_tweets$john_kasich <-str_count(sample_tweets$textl, ignore.case("john kasich"))
+sample_tweets$johnkasich <-str_count(sample_tweets$textl, ignore.case("john kasich"))
+​
+sample_tweets <- mutate(sample_tweets, 
+                        bernie_tweet = ifelse(bernie_sanders > 0 | berniesanders > 0 | sanders > 0 | bern > 0, 1, 0))
+sample_tweets <- mutate(sample_tweets, 
+                        hillary_tweet = ifelse(hill_clinton > 0 | hillclinton > 0 | hil_clinton > 0 | hilclinton > 0 | clinton > 0 
+                                               | hillary > 0
+                                               , 1, 0)) 
+sample_tweets <- mutate(sample_tweets, 
+                        trump_tweet = ifelse(donald_trump > 0 | donaldtrump > 0 | trump > 0, 1, 0))
+sample_tweets <- mutate(sample_tweets, 
+                        rubio_tweet = ifelse(rubio > 0 | marco_rubio > 0 | marcorubio > 0,    1, 0))
+sample_tweets <- mutate(sample_tweets, 
+                        cruz_tweet = ifelse(cruz > 0 | ted_cruz > 0 | tedcruz > 0,    1, 0))
+sample_tweets <- mutate(sample_tweets, 
+                        kasich_tweet = ifelse(kasich > 0 | john_kasich > 0 | johnkasich > 0,    1, 0))
+​
+​
+###############################################
+### SENTIMENT ANALYSIS						###
+###############################################
+​
+score.sentiment <- function(sentences, pos.words, neg.words, .progress='none') {
+  require(plyr)
+  require(stringr)
+  scores = laply(sentences, function(sentence, pos.words, neg.words) {
+    sentence <- gsub("[^[:alnum:]///' ]", "", sentence)
+    sentence <- gsub('[[:punct:]]', '', sentence)
+    sentence <- gsub('[[:cntrl:]]', '', sentence)
+    sentence <- gsub('\\d+', '', sentence)
+    sentence <- tolower(sentence)
+    word.list <- str_split(sentence, '\\s+')
+    words <- unlist(word.list)
+    pos.matches <- match(words, pos.words)
+    neg.matches <- match(words, neg.words)
+    pos.matches <- !is.na(pos.matches)
+    neg.matches <- !is.na(neg.matches)
+    score <- sum(pos.matches) - sum(neg.matches)
+    return(score)
+  }, pos.words, neg.words, .progress=.progress)
+  scores.df <- data.frame(score=scores, text=sentences)
+  return(scores.df)
+}
+​
+#Load the lexicon
+pos.words <- scan('positive-words.txt', what='character', comment.char=';')
+neg.words <- scan('negative-words.txt', what='character', comment.char=';')
+​
+#Scores for Each Tweet
+sample_tweets$score <- score.sentiment(sample_tweets$text, pos.words, neg.words, .progress="text")
+sample_tweets$raw_score <- as.numeric(unlist(sample_tweets$score))[1:nrow(sample_tweets)]
+​
+vars <- c("id_str","raw_score","bernie_tweet","hillary_tweet","trump_tweet","rubio_tweet","cruz_tweet","kasich_tweet")
+sentiment.df <- sample_tweets[vars]
+write.csv(sentiment.df, "sentiment.feb.csv", row.names=FALSE, fileEncoding='latin1')
