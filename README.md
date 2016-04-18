@@ -15,3 +15,6 @@ Schinria Islam: Created repository and README.md
 
 *4/7*
 Steven McAlpine: Created a master file with primary dates and winners for both parties using delegate counts from RealClearPolitics.com
+
+*4/17*
+Jessica Kim: Created a code to count the frequency of tweets by candidate name mention and by positive, negative sentiments by candidate over days
