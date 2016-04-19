@@ -18,3 +18,6 @@ Steven McAlpine: Created a master file with primary dates and winners for both p
 
 *4/17*
 Jessica Kim: Created a code to count the frequency of tweets by candidate name mention and by positive, negative sentiments by candidate over days
+
+*4/18*
+Schinria Islam: Added R code for sentiment analysis to repo
