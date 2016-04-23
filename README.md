@@ -3,15 +3,15 @@ This is the repository for the final Data Visualization project for QMSS 4063 us
 
 ###Team Members:
 
-Jessica Kim
-Schinria Islam
-Steve McAlpine
-Jeanette Pang
+* Jessica Kim
+* Schinria Islam
+* Steve McAlpine
+* Jeanette Pang
 
-Let's use the READ_ME file as a timeline, keeping a record of our contributions over time. If you're adding a file just insert your name, date, and a small intro to a recent contribution:
+Let's use `READ_ME.md` as a timeline, keeping a record of our contributions over time. If you're adding a file just insert your name, date, and a small intro to a recent contribution:
 
 *4/5*
-Schinria Islam: Created repository and README.md
+Schinria Islam: Created repository and `README.md`
 
 *4/7*
 Steven McAlpine: Created a master file with primary dates and winners for both parties using delegate counts from RealClearPolitics.com
