@@ -1,29 +1,30 @@
 setwd("/Users/jessica_nyu/Google Drive/tweets")
 filenames <- list.files(pattern = "6.csv$")
 
-library(plyr) 
-library(dplyr)
+library(plyr) #for dplyr
+library(dplyr) #to filter
+libray(readr) #to use read_csv, which doesn't read in everything as characters (rather than read.csv)
 
 #used this function initially but realized second one (tweet_us2) did same thing but was cleaner
-tweet_us <- function(filenames) {
-	df1 <- read.csv(filenames[1])
-	for (f in 2:length(filenames)) {
-	  df_next <- read.csv(filenames[f], stringsAsFactors = FALSE, nrows = 5)
-		df_next <- df_next %>% filter(place_lat >= 24.52 &
-		place_lat <= 50.35 & 
-		place_lon <= -65.96 & 
-		place_lon >= -127.49)
-  df_all <- rbind(df1, df_next)
-	} 
-	return(df_all)
-}
+#tweet_us <- function(filenames) {
+#	df1 <- read.csv(filenames[1])
+#	for (f in 2:length(filenames)) {
+#	  df_next <- read.csv(filenames[f], stringsAsFactors = FALSE, nrows = 5)
+#		df_next <- df_next %>% filter(place_lat >= 24.52 &
+#		place_lat <= 50.35 & 
+#		place_lon <= -65.96 & 
+#		place_lon >= -127.49)
+#  df_all <- rbind(df1, df_next)
+#	} 
+#	return(df_all)
+#}
 
 #This was the code I ended up using to filter the tweets to within the US
 tweet_us2 <- function(file){
-  df1 <- read.csv(file[1], stringsAsFactors = FALSE)
+  df1 <- read_csv(file[1])
   df1 <- df1 %>% filter(geo_enabled == "True" & country_code == "US")
   for (f in 2:length(file)) {
-    df_next <-  read.csv(file[f], stringsAsFactors = FALSE) %>% 
+    df_next <-  read_csv(file[f]) %>% 
       filter(geo_enabled == "True" & country_code == "US")
     df1 <- rbind(df1, df_next)
   } 
